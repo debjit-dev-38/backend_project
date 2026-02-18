@@ -1,1 +1,1 @@
-# my first big backend project tutorial for understanding
+# my first backend project tutorial for clearing the clutter
