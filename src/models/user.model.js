@@ -57,6 +57,7 @@ userSchema.pre("save", async function (next) {
     if(!this.isModified("password")) return next();
 
     this.password=await bcrypt.hash(this.password, 10)
+
 })
 
 userSchema.methods.isPasswordCorrect=async function(password)
@@ -64,7 +65,7 @@ userSchema.methods.isPasswordCorrect=async function(password)
     return await bcrypt.compare(password, this.password)
 }
 
-userSchema.methods.generateAccessToken=function(){
+userSchema.methods.generateAccessToken=function(){ //access tokens are short lived. Done wherever authentication is required
     jwt.sign(
         {
             _id:this._id,
@@ -78,7 +79,7 @@ userSchema.methods.generateAccessToken=function(){
         }
     )
 }
-userSchema.methods.generateRefreshToken=function(){
+userSchema.methods.generateRefreshToken=function(){ //refresh tokens are long lived.Some tasks dont require auth everytime thats why refresh is used
     jwt.sign(
         {
             _id:this._id,
