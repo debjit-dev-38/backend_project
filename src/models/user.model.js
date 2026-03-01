@@ -53,8 +53,8 @@ const userSchema= new Schema(
     }
 )
 
-userSchema.pre("save", async function (next) {
-    if(!this.isModified("password")) return next();
+userSchema.pre("save", async function () {
+    if(!this.isModified("password")) return;
 
     this.password=await bcrypt.hash(this.password, 10)
 
@@ -66,7 +66,7 @@ userSchema.methods.isPasswordCorrect=async function(password)
 }
 
 userSchema.methods.generateAccessToken=function(){ //access tokens are short lived. Done wherever authentication is required
-    jwt.sign(
+    return jwt.sign(
         {
             _id:this._id,
             email:this.email,
@@ -80,7 +80,7 @@ userSchema.methods.generateAccessToken=function(){ //access tokens are short liv
     )
 }
 userSchema.methods.generateRefreshToken=function(){ //refresh tokens are long lived.Some tasks dont require auth everytime thats why refresh is used
-    jwt.sign(
+    return jwt.sign(
         {
             _id:this._id,
         },
@@ -90,5 +90,5 @@ userSchema.methods.generateRefreshToken=function(){ //refresh tokens are long li
         }
     )
 }
-userSchema.methods.generateRefreshToken=function(){}
+
 export const User=mongoose.model("User", userSchema) 
